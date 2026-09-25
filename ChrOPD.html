@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Alem Ketema Enat General Hospital</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-hover: #1d4ed8;
+      --accent: #0284c7;
+      --bg-gray: #f8fafc;
+      --border-color: #cbd5e1;
+      --text-dark: #0f172a;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #d97706;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-gray);
+      color: var(--text-dark);
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Login Screen Overlay */
+    #login-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .login-card {
+      background: #ffffff;
+      padding: 35px 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      text-align: center;
+    }
+
+    .login-card h2 {
+      color: var(--primary);
+      margin-bottom: 5px;
+      font-size: 1.4rem;
+    }
+
+    .login-card p {
+      color: #64748b;
+      font-size: 0.88rem;
+      margin-bottom: 25px;
+    }
+
+    .login-error {
+      background-color: #fef2f2;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    /* Main Container */
+    .app-container {
+      display: none;
+      padding-bottom: 30px;
+    }
+
+    /* Fixed / Sticky Header & Nav Container */
+    .sticky-top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-bottom: 2px solid #cbd5e1;
+      padding: 15px 25px 10px 25px;
+    }
+
+    .header-bar {
+      text-align: center;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .header-bar h1 {
+      font-size: 1.8rem;
+      color: #1e3a8a;
+      font-weight: 800;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .header-bar p {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .header-controls {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .user-badge {
+      font-size: 0.88rem;
+      background: #e2e8f0;
+      color: #334155;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-right: 10px;
+      font-weight: 600;
+    }
+
+    /* Nav Tabs */
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid #cbd5e1;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 10px 18px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      color: #1e3a8a;
+      border-top: 3px solid #1e3a8a;
+      border-left: 1px solid #cbd5e1;
+      border-right: 1px solid #cbd5e1;
+      background-color: #eff6ff;
+    }
+
+    .filter-card {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: flex-end;
+      justify-content: center;
+      background: #f1f5f9;
+      padding: 12px 16px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 9px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 0.95rem;
+      width: 100%;
+      background: #ffffff;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary { background-color: #1e3a8a; color: white; }
+    .btn-primary:hover { background-color: #1d4ed8; }
+    .btn-success { background-color: #16a34a; color: white; }
+    .btn-secondary { background-color: #55657e; color: white; }
+    .btn-danger { background-color: var(--danger); color: white; }
+    .btn-warning { background-color: var(--warning); color: white; }
+    .btn-sm { padding: 4px 8px; font-size: 0.8rem; margin-right: 4px; }
+
+    /* Content Wrapper */
+    .content-body {
+      max-width: 1250px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .tab-content {
+      display: none;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* UI Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+
+    .data-table th, .data-table td {
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      text-align: left;
+    }
+
+    .data-table th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+    }
+
+    /* Print Document Formatting */
+    #report-print-area {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .report-header {
+      text-align: center;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #000;
+      padding-bottom: 15px;
+    }
+
+    .report-header h2 { font-size: 1.5rem; color: #1e3a8a; text-transform: uppercase; text-align: center; }
+    .report-header h3 { font-size: 1.1rem; color: #333; margin-top: 4px; text-align: center; }
+
+    .report-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+      font-size: 0.88rem;
+    }
+
+    .report-table th, .report-table td {
+      border: 1px solid #333;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .report-table th { background-color: #f2f2f2; font-weight: bold; }
+    .report-table td.val-col { text-align: center; width: 100px; font-weight: bold; }
+    .report-table tr.section-title { background-color: #cbd5e1; font-weight: bold; font-size: 0.95rem; }
+    .report-table tr.sub-section { background-color: #e2e8f0; font-weight: 700; }
+
+    .report-footer {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      padding-top: 20px;
+    }
+
+    .signature-block {
+      width: 45%;
+      border-top: 1px dashed #000;
+      padding-top: 8px;
+    }
+
+    /* Audit Logs */
+    .log-box {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: monospace;
+      padding: 15px;
+      border-radius: 6px;
+      max-height: 250px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+    }
+
+    .badge-cohort {
+      background-color: #dbeafe;
+      color: #1e40af;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Print styles overrides */
+    @media print {
+      body { background-color: #fff; padding: 0; }
+      #login-screen, .sticky-top-bar, .no-print { display: none !important; }
+      .app-container { display: block !important; }
+      .content-body { padding: 0; margin: 0; max-width: 100%; }
+      .tab-content { border: none; box-shadow: none; padding: 0; }
+      #report-view { display: block !important; }
+      #report-print-area { border: none; box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
+      .report-table th { background-color: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .report-table tr.section-title { background-color: #cbd5e1 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .report-table tr.sub-section { background-color: #e2e8f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="login-screen">
+    <div class="login-card">
+      <h2>Welcome to Alem Ketema Enat General Hospital</h2>
+      <p>NCD Data Portal Login</p>
+      
+      <div id="login-error" class="login-error">Invalid Username or Password!</div>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group" style="margin-bottom: 15px; text-align: left;">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Enter username" required autofocus>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px; text-align: left;">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 11px;">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Authenticated Application Container -->
+  <div id="app-container" class="app-container">
+    
+    <!-- Fixed / Sticky Top Bar -->
+    <div class="sticky-top-bar no-print">
+      
+      <!-- Top Header Bar -->
+      <div class="header-bar">
+        <h1>Welcome to Alem Ketema Enat General Hospital</h1>
+        <p>HMIS 08.2 NCD Data Management System</p>
+      </div>
+
+      <div class="header-controls">
+        <span class="user-badge">👤 User: <span id="current-user-display">admin</span> (<span id="current-role-display">Administrator</span>)</span>
+        <button class="btn btn-success" onclick="window.print()">🖨️ Print / Export PDF</button>
+        <button class="btn btn-secondary" style="margin-left: 8px;" onclick="handleLogout()">🚪 Logout</button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-nav">
+        <button class="tab-btn active" id="tab-btn-data" onclick="switchTab('data-entry-reg', this)">📝 Data Entry & Patient Registration</button>
+        <button class="tab-btn" id="tab-btn-report" onclick="switchTab('report-view', this)">📊 Report Viewer & PDF Export</button>
+        <button class="tab-btn" id="tab-btn-import" onclick="switchTab('import-export', this)">💾 Import & Export</button>
+        <button class="tab-btn admin-only" id="admin-tab-btn" onclick="switchTab('admin-panel', this)">⚙️ Admin Tab</button>
+      </div>
+
+      <!-- Date Range Filter Bar -->
+      <div id="filter-section" class="filter-card">
+        <div class="form-group">
+          <label for="startDate">Report Start Date:</label>
+          <input type="date" id="startDate" value="2026-09-25" onchange="generateReport()">
+        </div>
+        <div class="form-group">
+          <label for="endDate">Report End Date:</label>
+          <input type="date" id="endDate" value="2026-09-25" onchange="generateReport()">
+        </div>
+        <button class="btn btn-primary" onclick="generateReport()">Generate Aggregated Report</button>
+        <button class="btn btn-secondary" onclick="loadSampleData()">Load Sample NCD Data</button>
+      </div>
+
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-body">
+
+      <!-- TAB 1: Data Entry & Patient Registration -->
+      <div id="data-entry-reg" class="tab-content active">
+        
+        <!-- Section A: Individual Patient Registration -->
+        <h2>👤 Individual Patient Registration</h2>
+        <p style="margin-bottom: 15px; color: #64748b; font-size: 0.9rem;">Register individual NCD patients (Hypertension, Diabetes, CVD) for cohort tracking and automatic report generation.</p>
+
+        <form id="patientForm" onsubmit="registerPatient(event)" style="background: #f8fafc; padding: 20px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 25px;">
+          <input type="hidden" id="reg-patient-id" value="">
+          
+          <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+            <div class="form-group">
+              <label>Medical Record Number (MRN) *</label>
+              <input type="text" id="reg-mrn" required placeholder="e.g. MRN/10293">
+            </div>
+            <div class="form-group">
+              <label>Full Patient Name *</label>
+              <input type="text" id="reg-name" required placeholder="Full Name">
+            </div>
+            <div class="form-group">
+              <label>Age (Years) *</label>
+              <input type="number" id="reg-age" required min="0" max="120" placeholder="e.g. 45">
+            </div>
+            <div class="form-group">
+              <label>Sex *</label>
+              <select id="reg-sex" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+            <div class="form-group">
+              <label>Primary Diagnosis Category *</label>
+              <select id="reg-diag" required onchange="updateSubOptions()">
+                <option value="HTN">Hypertension (HTN)</option>
+                <option value="DM">Diabetes Mellitus (DM)</option>
+                <option value="CVD">Cardiovascular Risk (CVD)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label id="lbl-screening-result">Screening Result *</label>
+              <select id="reg-sub-diag" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group" id="grp-dm-type" style="display: none;">
+              <label>Diabetes Type (Enrolled Care) *</label>
+              <select id="reg-dm-type">
+                <option value="Type 1">Type 1</option>
+                <option value="Type 2">Type 2</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Enrollment Timing *</label>
+              <select id="reg-timing" required>
+                <option value="Newly Enrolled">Newly Enrolled to Care</option>
+                <option value="Previously in Care">Previously in Care</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Treatment Modality *</label>
+              <select id="reg-treatment" required>
+                <option value="Healthy Life Style Counseling (HLC) only">HLC Only</option>
+                <option value="Pharmacological Management and HLC">Pharmacological Management + HLC</option>
+                <option value="With Statin">With Statin (CVD)</option>
+                <option value="Without Statin">Without Statin (CVD)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 6-Month Cohort Metrics Integration -->
+          <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; background: #eff6ff; padding: 12px; border-radius: 6px; border: 1px solid #bfdbfe;">
+            <div class="form-group">
+              <label style="color: #1e40af;">6-Month Prior Cohort Member? *</label>
+              <select id="reg-cohort-6m" required style="font-weight: 600;">
+                <option value="No">No (New Registration / Regular Care)</option>
+                <option value="Yes">Yes (Registered 6 Months Prior Cohort Member)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label style="color: #1e40af;">6-Month Cohort Treatment Outcome</label>
+              <select id="reg-cohort-outcome">
+                <option value="N/A">N/A (Not Cohort Evaluated)</option>
+                <option value="Controlled">Controlled</option>
+                <option value="Uncontrolled">Uncontrolled</option>
+                <option value="Lost to follow-up">Lost to follow-up</option>
+                <option value="Died">Died</option>
+                <option value="Transferred out">Transferred out</option>
+                <option value="Not evaluated">Not evaluated</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Registration Date *</label>
+              <input type="date" id="reg-date" required>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button type="submit" id="btn-save-patient" class="btn btn-primary">➕ Register Patient</button>
+            <button type="button" id="btn-cancel-edit" class="btn btn-secondary" onclick="cancelPatientEdit()" style="display: none;">Cancel Edit</button>
+          </div>
+        </form>
+
+        <h3>Registered NCD Patient Directory</h3>
+        <div style="margin: 15px 0;">
+          <input type="text" id="patient-search" placeholder="🔍 Search by MRN or Name..." oninput="renderPatientTable()" style="padding: 8px 12px; width: 100%; max-width: 350px; border: 1px solid var(--border-color); border-radius: 4px;">
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>MRN</th>
+              <th>Name</th>
+              <th>Age / Sex</th>
+              <th>Diagnosis</th>
+              <th>Screening / Sub-Type</th>
+              <th>6M Cohort?</th>
+              <th>Outcome</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="patient-table-body">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- TAB 2: Printable Report View -->
+      <div id="report-view" class="tab-content">
+        <div id="report-print-area">
+          <div class="report-header">
+            <h2>Welcome to Alem Ketema Enat General Hospital</h2>
+            <h3>HMIS 08.2 - NCD Monthly Data Report</h3>
+            <div class="report-meta">
+              <span><strong>Reporting Period:</strong> <span id="disp-start-date">2026-09-25</span> to <span id="disp-end-date">2026-09-25</span></span>
+              <span><strong>HMIS Code:</strong> 08.2</span>
+            </div>
+          </div>
+
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 160px;">S.No / Code</th>
+                <th>Activity / Indicator Name</th>
+                <th class="val-col">Total</th>
+              </tr>
+            </thead>
+            <tbody id="report-table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+
+          <div class="report-footer">
+            <div class="signature-block">
+              <p><strong>Reported By (Chronic Opd Head):</strong></p>
+              <p style="margin-top: 15px;">Name: ___________________________</p>
+              <p style="margin-top: 5px;">Signature: ________________________</p>
+            </div>
+            <div class="signature-block">
+              <p><strong>Approved By (HMIS, Monitoring & Evaluation):</strong></p>
+              <p style="margin-top: 15px;">Name:______________________________</p>
+              <p style="margin-top: 5px;">Signature: ________________________</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Import and Export -->
+      <div id="import-export" class="tab-content">
+        <h2>Data Backup, Restore & Export Activities</h2>
+        <p style="margin-bottom: 20px; color: #64748b; font-size: 0.9rem;">Manage local system databases, backup configurations, and export raw datasets.</p>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+          <div style="flex: 1; min-width: 300px; border: 1px solid var(--border-color); padding: 20px; border-radius: 6px; background: #f8fafc;">
+            <h3>📤 Export System Data</h3>
+            <p style="font-size: 0.88rem; color: #64748b; margin: 10px 0 15px 0;">Download full JSON backup files containing registered patients, users, and audit logs.</p>
+            <button class="btn btn-primary" onclick="exportJSONBackup()" style="margin-bottom: 10px; width: 100%;">💾 Download JSON System Backup</button>
+            <button class="btn btn-secondary" onclick="exportPatientsCSV()" style="width: 100%;">📊 Export Patients Directory (CSV)</button>
+          </div>
+
+          <div style="flex: 1; min-width: 300px; border: 1px solid var(--border-color); padding: 20px; border-radius: 6px; background: #f8fafc;">
+            <h3>📥 Import System Data</h3>
+            <p style="font-size: 0.88rem; color: #64748b; margin: 10px 0 15px 0;">Select a previously generated JSON system backup file to restore records.</p>
+            <input type="file" id="import-file" accept=".json" style="margin-bottom: 15px;">
+            <button class="btn btn-success" onclick="importJSONBackup()" style="width: 100%;">📂 Upload & Restore Backup</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Admin Control Panel -->
+      <div id="admin-panel" class="tab-content admin-only">
+        <h2>Administrator Control Panel</h2>
+        <p style="margin-bottom: 20px; color: #64748b; font-size: 0.9rem;">User management, facility configuration, audit logs, and security controls.</p>
+
+        <div style="border: 1px solid var(--border-color); padding: 20px; border-radius: 6px; background: #fff; margin-bottom: 25px;">
+          <h3>👥 Add New User Account</h3>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Create accounts for data clerks, health officers, or administrators.</p>
+
+          <form id="addUserForm" onsubmit="addNewUser(event)" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
+            <div class="form-group">
+              <label for="new-username">Username *</label>
+              <input type="text" id="new-username" required placeholder="e.g. john_doe">
+            </div>
+            <div class="form-group">
+              <label for="new-fullname">Full Name *</label>
+              <input type="text" id="new-fullname" required placeholder="e.g. John Doe">
+            </div>
+            <div class="form-group">
+              <label for="new-password">Password *</label>
+              <input type="password" id="new-password" required placeholder="Enter password">
+            </div>
+            <div class="form-group">
+              <label for="new-role">Role *</label>
+              <select id="new-role" required>
+                <option value="Data Clerk">Staf</option>
+                <option value="Data Clerk">Chronic OPD Staf</option>
+                <option value="Health Information Officer">Health Information Officer</option>
+                <option value="Administrator">Administrator</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="height: 42px;">➕ Add User</button>
+          </form>
+
+          <h4 style="margin-top: 25px; color: var(--primary);">System User Directory</h4>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Role</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="user-table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 25px;">
+          <div style="border: 1px solid var(--border-color); padding: 20px; border-radius: 6px; background: #fff;">
+            <h3>⚠️ System Database Maintenance</h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 8px 0 15px 0;">Reset local database storage to default state.</p>
+            <button class="btn btn-danger" onclick="factoryResetDatabase()">🗑️ Factory Reset All Local Data</button>
+          </div>
+        </div>
+
+        <h3>📜 System Audit Trail & Event Logs</h3>
+        <div style="margin-top: 10px;">
+          <div id="audit-log-box" class="log-box"></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Storage Keys
+    const AUTH_KEY = "hmis_auth_user";
+    const STORAGE_KEY_PATIENTS = "hmis_ncd_patients_v1";
+    const STORAGE_KEY_LOGS = "hmis_ncd_logs_v1";
+    const STORAGE_KEY_USERS = "hmis_ncd_users_v1";
+
+    // High Capacity Permanent IndexedDB Storage Engine
+    const DB_NAME = "HMIS_NCD_Permanent_DB";
+    const DB_VERSION = 1;
+    let dbInstance = null;
+
+    function initIndexedDB() {
+      return new Promise((resolve) => {
+        if (!window.indexedDB) {
+          resolve(null);
+          return;
+        }
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => resolve(null);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains("patients")) db.createObjectStore("patients", { keyPath: "id" });
+          if (!db.objectStoreNames.contains("logs")) db.createObjectStore("logs", { keyPath: "id", autoIncrement: true });
+          if (!db.objectStoreNames.contains("users")) db.createObjectStore("users", { keyPath: "username" });
+        };
+        request.onsuccess = (e) => {
+          dbInstance = e.target.result;
+          resolve(dbInstance);
+        };
+      });
+    }
+
+    async function persistPatientsIndexedDB(patients) {
+      if (!dbInstance) await initIndexedDB();
+      if (!dbInstance) return;
+      try {
+        const tx = dbInstance.transaction("patients", "readwrite");
+        const store = tx.objectStore("patients");
+        store.clear();
+        patients.forEach(p => store.put(p));
+      } catch (err) {
+        console.warn("IndexedDB sync warning:", err);
+      }
+    }
+
+    // HMIS 08.2 Indicator Definitions
+    const hmisStructure = [
+      {
+        category: "Hypertension (NCT HTN)",
+        items: [
+          { code: "NCD_HTNDX.1", name: "Number of Individuals screened for hypertension", type: "header" },
+          { code: "NCD_HTNDX.1.1", name: "18-29 Years, Male" },
+          { code: "NCD_HTNDX.1.2", name: "18-29 Years, Female" },
+          { code: "NCD_HTNDX.1.3", name: "30-39 Years, Male" },
+          { code: "NCD_HTNDX.1.4", name: "30-39 Years, Female" },
+          { code: "NCD_HTNDX.1.5", name: "40-69 Years, Male" },
+          { code: "NCD_HTNDX.1.6", name: "40-69 Years, Female" },
+          { code: "NCD_HTNDX.1.7", name: ">=70 Years, Male" },
+          { code: "NCD_HTNDX.1.8", name: ">=70 Years, Female" },
+          
+          { code: "NCD_HTNDX.1.2_GRP", name: "Number of Individuals screened for hypertension by result of screening", type: "header" },
+          { code: "NCD_HTNDX.1.2.1", name: "Raised BP" },
+          { code: "NCD_HTNDX.1.2.2", name: "Normal BP" },
+
+          { code: "NCD_HTNDX.2", name: "Hypertensive patients enrolled to care by type of Treatment", type: "header" },
+          { code: "NCD_HTNDX.2.1", name: "Healthy Life Style Counseling (HLC) only" },
+          { code: "NCD_HTNDX.2.2", name: "Pharmacological Management and HLC" },
+
+          { code: "NCD_HTNDX.2.2_GRP", name: "Hypertensive patients enrolled to care by age and sex", type: "header" },
+          { code: "NCD_HTNDX.2.2.1", name: "18-29 Years, Male" },
+          { code: "NCD_HTNDX.2.2.2", name: "18-29 Years, Female" },
+          { code: "NCD_HTNDX.2.2.3", name: "30-39 Years, Male" },
+          { code: "NCD_HTNDX.2.2.4", name: "30-39 Years, Female" },
+          { code: "NCD_HTNDX.2.2.5", name: "40-69 Years, Male" },
+          { code: "NCD_HTNDX.2.2.6", name: "40-69 Years, Female" },
+          { code: "NCD_HTNDX.2.2.7", name: ">=70 Years, Male" },
+          { code: "NCD_HTNDX.2.2.8", name: ">=70 Years, Female" },
+
+          { code: "NCD_HTNDX.2.3", name: "Hypertensive patients by timing of enrollment", type: "header" },
+          { code: "NCD_HTNDX.2.3.1", name: "Newly Enrolled to Care" },
+          { code: "NCD_HTNDX.2.3.2", name: "Previously in Care" },
+          { code: "NCD_HTNDX.2.3.3", name: "Outpatient Total (Newly Enrolled + Previously in Care)", type: "computed_total", categoryKey: "HTN" },
+
+          // Standalone cohort baseline (Explicitly excluded from header sum)
+          { code: "NCD_HTNTX.0", name: "Total number of cohort hypertensive patients enrolled to care six month prior to reporting month" },
+          
+          { code: "NCD_HTNTX.1", name: "Treatment outcome for cohort of patient registered for hypertension treatment six months prior", type: "header" },
+          { code: "NCD_HTNTX.1.1", name: "Controlled" },
+          { code: "NCD_HTNTX.1.2", name: "Uncontrolled" },
+          { code: "NCD_HTNTX.1.3", name: "Lost to follow-up" },
+          { code: "NCD_HTNTX.1.4", name: "Died" },
+          { code: "NCD_HTNTX.1.5", name: "Transferred out" },
+          { code: "NCD_HTNTX.1.6", name: "Not evaluated" }
+        ]
+      },
+      {
+        category: "Diabetes Mellitus (DM)",
+        items: [
+          { code: "NCD_DMDX.1.2", name: "Individuals screened for Diabetes Mellitus by age and sex", type: "header" },
+          { code: "NCD_DMDX.1.2.1", name: "< 40 Years, Male" },
+          { code: "NCD_DMDX.1.2.2", name: "< 40 Years, Female" },
+          { code: "NCD_DMDX.1.2.3", name: ">= 40 Years, Male" },
+          { code: "NCD_DMDX.1.2.4", name: ">= 40 Years, Female" },
+
+          { code: "NCD_DMDX.1.1", name: "Number of Individuals screened for Diabetes Mellitus by result of screening", type: "header" },
+          { code: "NCD_DMDX.1.1.1", name: "Raised blood Sugar" },
+          { code: "NCD_DMDX.1.1.2", name: "Normal blood Sugar" },
+
+          { code: "NCD_DMDX.2", name: "Diabetic patients enrolled to care by types of Diabetes", type: "header" },
+          { code: "NCD_DMDX.2.1", name: "Type 1" },
+          { code: "NCD_DMDX.2.2", name: "Type 2" },
+
+          { code: "NCD_DMDX.2.2_GRP", name: "Diabetic patients enrolled to care by type of treatment", type: "header" },
+          { code: "NCD_DMDX.2.2.1", name: "Healthy Life Style Counseling (HLC) only" },
+          { code: "NCD_DMDX.2.2.2", name: "Pharmacological Management and HLC" },
+
+          { code: "NCD_DMDX.2.3_GRP", name: "Diabetic patients enrolled to care by age and sex", type: "header" },
+          { code: "NCD_DMDX.2.3.1", name: "< 15 Years, Male" },
+          { code: "NCD_DMDX.2.3.2", name: "< 15 Years, Female" },
+          { code: "NCD_DMDX.2.3.3", name: "15-29 Years, Male" },
+          { code: "NCD_DMDX.2.3.4", name: "15-29 Years, Female" },
+          { code: "NCD_DMDX.2.3.5", name: "30-39 Years, Male" },
+          { code: "NCD_DMDX.2.3.6", name: "30-39 Years, Female" },
+          { code: "NCD_DMDX.2.3.7", name: ">= 40 Years, Male" },
+          { code: "NCD_DMDX.2.3.8", name: ">= 40 Years, Female" },
+
+          { code: "NCD_DMDX.2.4", name: "Diabetic patients by Timing of enrollment", type: "header" },
+          { code: "NCD_DMDX.2.4.1", name: "Newly Enrolled to Care" },
+          { code: "NCD_DMDX.2.4.2", name: "Previously in Care" },
+          { code: "NCD_DMDX.2.4.3", name: "Outpatient Total (Newly Enrolled + Previously in Care)", type: "computed_total", categoryKey: "DM" },
+
+          // Standalone cohort baseline (Explicitly excluded from header sum)
+          { code: "NCD_DMTX.0", name: "Total number of cohort of diabetes patients registered for diabetes treatment six months prior" },
+
+          { code: "NCD_DMTX.1", name: "Treatment outcome for cohort of patient registered for diabetes treatment six months prior", type: "header" },
+          { code: "NCD_DMTX.1.1", name: "Controlled" },
+          { code: "NCD_DMTX.1.2", name: "Uncontrolled" },
+          { code: "NCD_DMTX.1.3", name: "Lost to follow-up" },
+          { code: "NCD_DMTX.1.4", name: "Died" },
+          { code: "NCD_DMTX.1.5", name: "Transferred out" },
+          { code: "NCD_DMTX.1.6", name: "Not evaluated" }
+        ]
+      },
+      {
+        category: "Cardiovascular Diseases (CVD)",
+        items: [
+          { code: "NCD_CVD.1", name: "Number of individuals in high CVD risk by type of risk category", type: "header" },
+          { code: "NCD_CVD.1.1", name: "Lab based (>=20%)" },
+          { code: "NCD_CVD.1.2", name: "Non-Lab based (>=10%)" },
+
+          { code: "NCD_CVD.2", name: "Number of individuals in high CVD risk by Age Category", type: "header" },
+          { code: "NCD_CVD.2.1", name: "40-59 Years, Male" },
+          { code: "NCD_CVD.2.2", name: "40-59 Years, Female" },
+          { code: "NCD_CVD.2.3", name: "60-74 Years, Male" },
+          { code: "NCD_CVD.2.4", name: "60-74 Years, Female" },
+
+          { code: "NCD_CVD.3", name: "Number of patients with high CVD risk who received treatment by type", type: "header" },
+          { code: "NCD_CVD.3.1", name: "With Statin" },
+          { code: "NCD_CVD.3.2", name: "Without Statin" },
+
+          { code: "NCD_CVD.4", name: "Patients with high CVD risk who received treatment by Age Category", type: "header" },
+          { code: "NCD_CVD.4.1", name: "40-59 Years, Male" },
+          { code: "NCD_CVD.4.2", name: "40-59 Years, Female" },
+          { code: "NCD_CVD.4.3", name: "60-74 Years, Male" },
+          { code: "NCD_CVD.4.4", name: "60-74 Years, Female" }
+        ]
+      }
+    ];
+
+    // Auth & User Management
+    function getUsers() {
+      const defaultUsers = [
+        { username: "admin", password: "321", name: "System Administrator", role: "Administrator" },
+        { username: "clerk", password: "123", name: "Data Clerk", role: "Data Clerk" }
+      ];
+      const stored = localStorage.getItem(STORAGE_KEY_USERS);
+      if (!stored) {
+        localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(defaultUsers));
+        return defaultUsers;
+      }
+      return JSON.parse(stored);
+    }
+
+    function checkAuthStatus() {
+      const userRaw = sessionStorage.getItem(AUTH_KEY);
+      if (userRaw) {
+        const user = JSON.parse(userRaw);
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("app-container").style.display = "block";
+        document.getElementById("current-user-display").innerText = user.username;
+        document.getElementById("current-role-display").innerText = user.role;
+
+        const isAdmin = user.role === "Administrator" || user.role === "Admin";
+        document.querySelectorAll(".admin-only").forEach(el => {
+          el.style.display = isAdmin ? "" : "none";
+        });
+
+      } else {
+        document.getElementById("login-screen").style.display = "flex";
+        document.getElementById("app-container").style.display = "none";
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const uInput = document.getElementById("username").value.trim();
+      const pInput = document.getElementById("password").value.trim();
+
+      const users = getUsers();
+      const matched = users.find(u => u.username === uInput && u.password === pInput);
+
+      if (matched) {
+        sessionStorage.setItem(AUTH_KEY, JSON.stringify(matched));
+        document.getElementById("login-error").style.display = "none";
+        logAuditEvent("LOGIN", `User '${matched.username}' logged in successfully.`);
+        checkAuthStatus();
+        generateReport();
+        renderPatientTable();
+      } else {
+        document.getElementById("login-error").style.display = "block";
+      }
+    }
+
+    function handleLogout() {
+      logAuditEvent("LOGOUT", "User logged out.");
+      sessionStorage.removeItem(AUTH_KEY);
+      checkAuthStatus();
+    }
+
+    function switchTab(tabId, btnElement) {
+      document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      btnElement.classList.add("active");
+    }
+
+    // Dynamic Form Handling for Primary Diagnosis Category (HTN, DM, CVD)
+    function updateSubOptions() {
+      const diag = document.getElementById("reg-diag").value;
+      const subSelect = document.getElementById("reg-sub-diag");
+      const dmGroup = document.getElementById("grp-dm-type");
+
+      subSelect.innerHTML = "";
+
+      if (diag === "DM") {
+        dmGroup.style.display = "block";
+
+        const dmScreeningOptions = ["Raised blood Sugar", "Normal blood Sugar"];
+        dmScreeningOptions.forEach(opt => {
+          const el = document.createElement("option");
+          el.value = opt;
+          el.innerText = opt;
+          subSelect.appendChild(el);
+        });
+
+        const dmTypeSelect = document.getElementById("reg-dm-type");
+        dmTypeSelect.innerHTML = "";
+        const dmTypes = ["Type 1", "Type 2"];
+        dmTypes.forEach(opt => {
+          const el = document.createElement("option");
+          el.value = opt;
+          el.innerText = opt;
+          dmTypeSelect.appendChild(el);
+        });
+
+      } else {
+        dmGroup.style.display = "none";
+
+        let options = [];
+        if (diag === "HTN") {
+          options = ["Raised BP", "Normal BP"];
+        } else if (diag === "CVD") {
+          options = ["Lab based (>=20%)", "Non-Lab based (>=10%)"];
+        }
+
+        options.forEach(opt => {
+          const el = document.createElement("option");
+          el.value = opt;
+          el.innerText = opt;
+          subSelect.appendChild(el);
+        });
+      }
+    }
+
+    // Patient Data Persistence
+    function getPatients() {
+      const stored = localStorage.getItem(STORAGE_KEY_PATIENTS);
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    function savePatients(patientsArr) {
+      localStorage.setItem(STORAGE_KEY_PATIENTS, JSON.stringify(patientsArr));
+      persistPatientsIndexedDB(patientsArr);
+    }
+
+    function registerPatient(event) {
+      event.preventDefault();
+      const id = document.getElementById("reg-patient-id").value || "p_" + Date.now();
+      const mrn = document.getElementById("reg-mrn").value.trim();
+      const name = document.getElementById("reg-name").value.trim();
+      const age = parseInt(document.getElementById("reg-age").value, 10);
+      const sex = document.getElementById("reg-sex").value;
+      const diag = document.getElementById("reg-diag").value;
+      const subDiag = document.getElementById("reg-sub-diag").value;
+      const dmType = diag === "DM" ? document.getElementById("reg-dm-type").value : "N/A";
+      const timing = document.getElementById("reg-timing").value;
+      const treatment = document.getElementById("reg-treatment").value;
+      const cohort6m = document.getElementById("reg-cohort-6m").value;
+      const cohortOutcome = document.getElementById("reg-cohort-outcome").value;
+      const date = document.getElementById("reg-date").value;
+
+      const patientObj = { id, mrn, name, age, sex, diag, subDiag, dmType, timing, treatment, cohort6m, cohortOutcome, date };
+
+      let patients = getPatients();
+      const existingIdx = patients.findIndex(p => p.id === id);
+
+      if (existingIdx >= 0) {
+        patients[existingIdx] = patientObj;
+        logAuditEvent("UPDATE_PATIENT", `Updated patient MRN: ${mrn}`);
+      } else {
+        patients.push(patientObj);
+        logAuditEvent("REGISTER_PATIENT", `Registered new patient MRN: ${mrn}`);
+      }
+
+      savePatients(patients);
+      cancelPatientEdit();
+      renderPatientTable();
+      generateReport();
+      alert("Patient saved successfully!");
+    }
+
+    function editPatient(id) {
+      const patients = getPatients();
+      const p = patients.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById("reg-patient-id").value = p.id;
+      document.getElementById("reg-mrn").value = p.mrn;
+      document.getElementById("reg-name").value = p.name;
+      document.getElementById("reg-age").value = p.age;
+      document.getElementById("reg-sex").value = p.sex;
+      document.getElementById("reg-diag").value = p.diag;
+
+      updateSubOptions();
+
+      document.getElementById("reg-sub-diag").value = p.subDiag;
+      if (p.diag === "DM" && p.dmType) {
+        document.getElementById("reg-dm-type").value = p.dmType;
+      }
+      document.getElementById("reg-timing").value = p.timing;
+      document.getElementById("reg-treatment").value = p.treatment;
+      document.getElementById("reg-cohort-6m").value = p.cohort6m;
+      document.getElementById("reg-cohort-outcome").value = p.cohortOutcome || "N/A";
+      document.getElementById("reg-date").value = p.date;
+
+      document.getElementById("btn-save-patient").innerText = "💾 Save Changes";
+      document.getElementById("btn-cancel-edit").style.display = "inline-block";
+
+      document.getElementById("patientForm").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelPatientEdit() {
+      document.getElementById("patientForm").reset();
+      document.getElementById("reg-patient-id").value = "";
+      document.getElementById("btn-save-patient").innerText = "➕ Register Patient";
+      document.getElementById("btn-cancel-edit").style.display = "none";
+      document.getElementById("reg-date").value = new Date().toISOString().split('T')[0];
+      updateSubOptions();
+    }
+
+    function deletePatient(id) {
+      if (!confirm("Are you sure you want to delete this patient record?")) return;
+      let patients = getPatients();
+      const p = patients.find(item => item.id === id);
+      patients = patients.filter(item => item.id !== id);
+      savePatients(patients);
+      if (p) logAuditEvent("DELETE_PATIENT", `Deleted patient MRN: ${p.mrn}`);
+      renderPatientTable();
+      generateReport();
+    }
+
+    function renderPatientTable() {
+      const tbody = document.getElementById("patient-table-body");
+      const searchQuery = (document.getElementById("patient-search").value || "").toLowerCase().trim();
+      const patients = getPatients();
+
+      tbody.innerHTML = "";
+
+      const filtered = patients.filter(p => 
+        p.mrn.toLowerCase().includes(searchQuery) || p.name.toLowerCase().includes(searchQuery)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #64748b;">No patient records found.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const tr = document.createElement("tr");
+
+        const subTypeDisplay = p.diag === "DM" 
+          ? `Result: ${p.subDiag} | Type: ${p.dmType || 'N/A'}`
+          : p.subDiag;
+
+        const cohortBadge = p.cohort6m === "Yes" 
+          ? `<span class="badge-cohort">Yes (Cohort)</span>` 
+          : `<span style="color:#64748b; font-size:0.8rem;">No</span>`;
+
+        tr.innerHTML = `
+          <td><strong>${p.mrn}</strong></td>
+          <td>${p.name}</td>
+          <td>${p.age} Yrs / ${p.sex}</td>
+          <td><span style="font-weight: 600; color: var(--primary);">${p.diag}</span></td>
+          <td>${subTypeDisplay}</td>
+          <td>${cohortBadge}</td>
+          <td>${p.cohortOutcome || 'N/A'}</td>
+          <td>${p.date}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" onclick="editPatient('${p.id}')">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deletePatient('${p.id}')">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Helper to Match Age & Sex Breakdowns
+    function matchAgeSex(patient, label) {
+      const parts = label.split(',').map(s => s.trim());
+      if (parts.length < 2) return false;
+
+      const ageStr = parts[0];
+      const sexStr = parts[1];
+
+      if (patient.sex !== sexStr) return false;
+
+      const age = parseInt(patient.age, 10);
+      if (isNaN(age)) return false;
+
+      if (ageStr.startsWith('<')) {
+        const threshold = parseInt(ageStr.replace('<', '').trim(), 10);
+        return age < threshold;
+      } else if (ageStr.startsWith('>=')) {
+        const threshold = parseInt(ageStr.replace('>=', '').trim(), 10);
+        return age >= threshold;
+      } else if (ageStr.includes('-')) {
+        const range = ageStr.replace('Years', '').trim().split('-');
+        const minAge = parseInt(range[0], 10);
+        const maxAge = parseInt(range[1], 10);
+        return age >= minAge && age <= maxAge;
+      }
+      return false;
+    }
+
+    // Indicator Value Calculation Engine
+    function calculateIndicatorValue(item, patients, categoryName) {
+      let categoryKey = "";
+      if (categoryName.includes("Hypertension")) categoryKey = "HTN";
+      else if (categoryName.includes("Cardiovascular")) categoryKey = "CVD";
+      else if (categoryName.includes("Diabetes")) categoryKey = "DM";
+
+      const catPatients = patients.filter(p => p.diag === categoryKey);
+
+      // 1. Screening Results
+      if (item.name === "Raised blood Sugar" || item.name === "Normal blood Sugar" || item.name === "Raised BP" || item.name === "Normal BP" || item.name === "Lab based (>=20%)" || item.name === "Non-Lab based (>=10%)") {
+        return catPatients.filter(p => p.subDiag === item.name).length;
+      }
+
+      // 2. Types of Diabetes
+      if (item.name === "Type 1" || item.name === "Type 2" || item.name === "Type I" || item.name === "Type II") {
+        return catPatients.filter(p => p.dmType === item.name || (item.name.includes("1") && p.dmType === "Type 1") || (item.name.includes("2") && p.dmType === "Type 2")).length;
+      }
+
+      // 3. Treatment Modalities
+      if (item.name === "Healthy Life Style Counseling (HLC) only" || item.name === "Pharmacological Management and HLC" || item.name === "With Statin" || item.name === "Without Statin") {
+        return catPatients.filter(p => p.treatment === item.name).length;
+      }
+
+      // 4. Enrollment Timing
+      if (item.name === "Newly Enrolled to Care") {
+        return catPatients.filter(p => p.timing === "Newly Enrolled" || p.timing === "Newly Enrolled to Care").length;
+      }
+      if (item.name === "Previously in Care") {
+        return catPatients.filter(p => p.timing === "Previously in Care").length;
+      }
+
+      // 5. 6-Month Prior Cohort Base Count
+      if (item.code === "NCD_HTNTX.0" || item.code === "NCD_DMTX.0") {
+        return catPatients.filter(p => p.cohort6m === "Yes").length;
+      }
+
+      // 6. Cohort Outcomes
+      const outcomes = ["Controlled", "Uncontrolled", "Lost to follow-up", "Died", "Transferred out", "Not evaluated"];
+      if (outcomes.includes(item.name)) {
+        return catPatients.filter(p => p.cohort6m === "Yes" && p.cohortOutcome === item.name).length;
+      }
+
+      // 7. Age & Sex Breakdown Matching
+      return catPatients.filter(p => matchAgeSex(p, item.name)).length;
+    }
+
+    // Report Generator with Header Auto-Summation & Exclusion Rules
+    function generateReport() {
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+
+      document.getElementById("disp-start-date").innerText = startDate;
+      document.getElementById("disp-end-date").innerText = endDate;
+
+      const allPatients = getPatients();
+      const filteredPatients = allPatients.filter(p => p.date >= startDate && p.date <= endDate);
+
+      const tbody = document.getElementById("report-table-body");
+      tbody.innerHTML = "";
+
+      hmisStructure.forEach(catGroup => {
+        const catRow = document.createElement("tr");
+        catRow.className = "section-title";
+        catRow.innerHTML = `<td colspan="3">${catGroup.category}</td>`;
+        tbody.appendChild(catRow);
+
+        const items = catGroup.items;
+        let i = 0;
+        while (i < items.length) {
+          const currentItem = items[i];
+
+          if (currentItem.type === "header") {
+            // Collect sub-items until next header
+            let subItems = [];
+            let j = i + 1;
+            while (j < items.length && items[j].type !== "header") {
+              subItems.push(items[j]);
+              j++;
+            }
+
+            // Calculate auto-sum for header with strict exclusions for totals/cohorts
+            let headerSum = 0;
+            subItems.forEach(subItem => {
+              // Exclude Outpatient Totals and Standalone 6M Cohorts from parent header summation
+              const isExcluded = subItem.type === "computed_total" || subItem.code === "NCD_HTNTX.0" || subItem.code === "NCD_DMTX.0";
+              if (!isExcluded) {
+                headerSum += calculateIndicatorValue(subItem, filteredPatients, catGroup.category);
+              }
+            });
+
+            const tr = document.createElement("tr");
+            tr.className = "sub-section";
+            tr.innerHTML = `
+              <td><strong>${currentItem.code}</strong></td>
+              <td><strong>${currentItem.name}</strong></td>
+              <td class="val-col">${headerSum}</td>
+            `;
+            tbody.appendChild(tr);
+            i++;
+          } else if (currentItem.type === "computed_total") {
+            const catKey = currentItem.categoryKey;
+            const count = filteredPatients.filter(p => p.diag === catKey && (p.timing.includes("Newly") || p.timing.includes("Previously"))).length;
+            const tr = document.createElement("tr");
+            tr.style.backgroundColor = "#e0f2fe";
+            tr.style.fontWeight = "bold";
+            tr.innerHTML = `
+              <td><strong>${currentItem.code}</strong></td>
+              <td><strong>${currentItem.name}</strong></td>
+              <td class="val-col">${count}</td>
+            `;
+            tbody.appendChild(tr);
+            i++;
+          } else {
+            // Standard item
+            const val = calculateIndicatorValue(currentItem, filteredPatients, catGroup.category);
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${currentItem.code}</td>
+              <td>${currentItem.name}</td>
+              <td class="val-col">${val}</td>
+            `;
+            tbody.appendChild(tr);
+            i++;
+          }
+        }
+      });
+    }
+
+    // Sample Data Loader
+    function loadSampleData() {
+      const samplePatients = [
+        {
+          id: "p_101", mrn: "MRN/1001", name: "Tadesse Worku", age: 45, sex: "Male",
+          diag: "HTN", subDiag: "Raised BP", dmType: "N/A", timing: "Newly Enrolled",
+          treatment: "Pharmacological Management and HLC", cohort6m: "No", cohortOutcome: "N/A", date: "2026-09-25"
+        },
+        {
+          id: "p_102", mrn: "MRN/1002", name: "Alemayehu Kebede", age: 52, sex: "Male",
+          diag: "DM", subDiag: "Raised blood Sugar", dmType: "Type 2", timing: "Newly Enrolled",
+          treatment: "Pharmacological Management and HLC", cohort6m: "No", cohortOutcome: "N/A", date: "2026-09-25"
+        },
+        {
+          id: "p_103", mrn: "MRN/1003", name: "Chaltu Nigusse", age: 28, sex: "Female",
+          diag: "DM", subDiag: "Normal blood Sugar", dmType: "Type 1", timing: "Previously in Care",
+          treatment: "Pharmacological Management and HLC", cohort6m: "Yes", cohortOutcome: "Controlled", date: "2026-09-25"
+        },
+        {
+          id: "p_104", mrn: "MRN/1004", name: "Genet Hailu", age: 62, sex: "Female",
+          diag: "CVD", subDiag: "Lab based (>=20%)", dmType: "N/A", timing: "Newly Enrolled",
+          treatment: "With Statin", cohort6m: "No", cohortOutcome: "N/A", date: "2026-09-25"
+        },
+        {
+          id: "p_105", mrn: "MRN/1005", name: "Mulugeta Assefa", age: 35, sex: "Male",
+          diag: "DM", subDiag: "Raised blood Sugar", dmType: "Type 1", timing: "Newly Enrolled",
+          treatment: "Healthy Life Style Counseling (HLC) only", cohort6m: "No", cohortOutcome: "N/A", date: "2026-09-25"
+        }
+      ];
+
+      savePatients(samplePatients);
+      logAuditEvent("LOAD_SAMPLE_DATA", "Loaded sample NCD patient records.");
+      renderPatientTable();
+      generateReport();
+      alert("Sample NCD data loaded successfully!");
+    }
+
+    // Export & Import
+    function exportJSONBackup() {
+      const backupData = {
+        patients: getPatients(),
+        users: getUsers(),
+        logs: getAuditLogs(),
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `HMIS_08.2_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      logAuditEvent("EXPORT_JSON", "System backup JSON downloaded.");
+    }
+
+    function importJSONBackup() {
+      const fileInput = document.getElementById("import-file");
+      if (!fileInput.files.length) {
+        alert("Please select a JSON backup file first!");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.patients) savePatients(data.patients);
+          if (data.users) localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(data.users));
+          logAuditEvent("IMPORT_JSON", "System backup restored.");
+          alert("Backup restored successfully!");
+          renderPatientTable();
+          renderUserTable();
+          generateReport();
+        } catch (err) {
+          alert("Invalid backup JSON file formatting!");
+        }
+      };
+      reader.readAsText(fileInput.files[0]);
+    }
+
+    function exportPatientsCSV() {
+      const patients = getPatients();
+      if (!patients.length) { alert("No patient records to export!"); return; }
+
+      let csv = "MRN,Name,Age,Sex,Diagnosis,ScreeningResult,DMType,EnrollmentTiming,Treatment,Cohort6M,CohortOutcome,Date\n";
+      patients.forEach(p => {
+        csv += `"${p.mrn}","${p.name}",${p.age},"${p.sex}","${p.diag}","${p.subDiag}","${p.dmType}","${p.timing}","${p.treatment}","${p.cohort6m}","${p.cohortOutcome}","${p.date}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `NCD_Patients_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      logAuditEvent("EXPORT_CSV", "Exported patients directory to CSV.");
+    }
+
+    // Admin & User Operations
+    function addNewUser(e) {
+      e.preventDefault();
+      const u = document.getElementById("new-username").value.trim();
+      const fn = document.getElementById("new-fullname").value.trim();
+      const p = document.getElementById("new-password").value.trim();
+      const r = document.getElementById("new-role").value;
+
+      let users = getUsers();
+      if (users.some(x => x.username === u)) {
+        alert("Username already exists!");
+        return;
+      }
+
+      users.push({ username: u, name: fn, password: p, role: r });
+      localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+      logAuditEvent("ADD_USER", `Created user account: ${u}`);
+      document.getElementById("addUserForm").reset();
+      renderUserTable();
+      alert("New user account created!");
+    }
+
+    function deleteUser(uname) {
+      if (uname === "admin") { alert("Cannot delete primary admin account!"); return; }
+      if (!confirm(`Delete user '${uname}'?`)) return;
+
+      let users = getUsers().filter(u => u.username !== uname);
+      localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+      logAuditEvent("DELETE_USER", `Deleted user account: ${uname}`);
+      renderUserTable();
+    }
+
+    function renderUserTable() {
+      const tbody = document.getElementById("user-table-body");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+      const users = getUsers();
+
+      users.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${u.username}</strong></td>
+          <td>${u.name}</td>
+          <td>${u.role}</td>
+          <td>
+            ${u.username !== 'admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.username}')">🗑️ Delete</button>` : '<span style="color:#64748b; font-size:0.8rem;">System Root</span>'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Audit Logging
+    function getAuditLogs() {
+      const stored = localStorage.getItem(STORAGE_KEY_LOGS);
+      return stored ? JSON.parse(stored) : [];
+    }
+
+    function logAuditEvent(action, details) {
+      const currentUser = sessionStorage.getItem(AUTH_KEY) ? JSON.parse(sessionStorage.getItem(AUTH_KEY)).username : "SYSTEM";
+      const logs = getAuditLogs();
+      const entry = `[${new Date().toLocaleString()}] [${currentUser}] [${action}] ${details}`;
+      logs.unshift(entry);
+      localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(logs.slice(0, 100)));
+      renderAuditLogs();
+    }
+
+    function renderAuditLogs() {
+      const box = document.getElementById("audit-log-box");
+      if (!box) return;
+      const logs = getAuditLogs();
+      box.innerHTML = logs.length ? logs.join("<br>") : "No system logs available.";
+    }
+
+    function factoryResetDatabase() {
+      if (!confirm("DANGER: This will permanently erase all patient data and custom configurations. Continue?")) return;
+      localStorage.removeItem(STORAGE_KEY_PATIENTS);
+      localStorage.removeItem(STORAGE_KEY_LOGS);
+      localStorage.removeItem(STORAGE_KEY_USERS);
+      if (dbInstance) {
+        const tx = dbInstance.transaction(["patients", "logs", "users"], "readwrite");
+        tx.objectStore("patients").clear();
+        tx.objectStore("logs").clear();
+        tx.objectStore("users").clear();
+      }
+      alert("Database reset to factory default state!");
+      window.location.reload();
+    }
+
+    // System Startup Initialization
+    window.onload = async function() {
+      await initIndexedDB();
+      checkAuthStatus();
+      updateSubOptions();
+      document.getElementById("reg-date").value = new Date().toISOString().split('T')[0];
+      renderPatientTable();
+      renderUserTable();
+      renderAuditLogs();
+      generateReport();
+    };
+  </script>
+</body>
+</html>
